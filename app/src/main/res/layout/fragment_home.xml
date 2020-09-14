@@ -31,25 +31,38 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginTop = "20dp"
+        android:layout_above="@id/results_layout"
         android:layout_below="@id/header_layout">
    <ImageView
        android:id="@+id/image_to_classify"
-       android:layout_width="200dp"
-       android:layout_height="200dp"
-       ></ImageView>
-
-        <TextView
-            android:id="@+id/tv_labels"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="20000"
-            android:layout_marginTop="10dp">
-
-
-        </TextView>
+       android:layout_margin="10dp"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:src="@drawable/cloud"
+       />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/results_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:padding="10dp"
+        android:layout_above="@id/bottom_layout">
+         <TextView
+            android:id="@+id/tv_labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginLeft="5dp"
+            android:text="Upload your image here to see the results, or open live camera"
+            >
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

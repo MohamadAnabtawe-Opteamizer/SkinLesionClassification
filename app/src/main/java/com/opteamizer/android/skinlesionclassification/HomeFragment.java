@@ -28,6 +28,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ImageView imageToClassify;
     private ImageClassifier classifier;
     private TextView labels;
+    private int numThreads = 5;
     private static final int RESULT_LOAD_IMAGE = 1;
     public HomeFragment() {
     }
@@ -52,6 +53,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         uploadButton.setOnClickListener(this);
         try {
             classifier = new ImageClassifierFloatMobileNet(getActivity());
+            classifier.setNumThreads(numThreads);
+            if (GpuDelegateHelper.isGpuDelegateAvailable()) {
+                classifier.useGpu();
+            }
         } catch (IOException e) {
             Log.d(TAG, "Failed to load", e);
             classifier = null;
@@ -76,13 +81,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null){
-            Uri selectedImage = data.getData();
-            imageToClassify.setImageURI(selectedImage);
-            Bitmap bitmap = imageViewToBitmap(imageToClassify);
-            SpannableStringBuilder textToShow = new SpannableStringBuilder();
-            classifier.classifyFrame(bitmap, textToShow);
-            bitmap.recycle();
-            showToast(textToShow);
+            Uri imageUri = data.getData();
+            imageToClassify.setImageURI(imageUri);
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, classifier.getImageSizeX(), classifier.getImageSizeY(), false);
+                SpannableStringBuilder textToShow = new SpannableStringBuilder();
+                //warm up model for 15 iterations
+                for(int i=0; i<15; i++) {
+                    classifier.classifyFrame(scaledBitmap, textToShow);
+                    textToShow.clear();
+                }
+                classifier.classifyFrame(scaledBitmap, textToShow);
+                bitmap.recycle();
+                showToast(textToShow);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

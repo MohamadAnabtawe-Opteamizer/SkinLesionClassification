@@ -341,10 +341,7 @@ public class Camera2Fragment extends Fragment
       classifier.setNumThreads(numThreads);
       if (device.equals(cpu)) {
       } else if (device.equals(gpu)) {
-        if (!GpuDelegateHelper.isGpuDelegateAvailable()) {
-          showToast("gpu not in this build.");
-          classifier = null;
-        } else {
+        if (GpuDelegateHelper.isGpuDelegateAvailable()) {
           classifier.useGpu();
         }
       }
