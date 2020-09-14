@@ -47,6 +47,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,6 +83,7 @@ public class Camera2Fragment extends Fragment
   private TextView threadsTextView;
   private ImageClassifier classifier;
   private Spinner deviceSpinner;
+  private RelativeLayout threadsLayout;
   /** Max preview width that is guaranteed by Camera2 API */
   private static final int MAX_PREVIEW_WIDTH = 1920;
 
@@ -360,6 +362,7 @@ public class Camera2Fragment extends Fragment
     threadsTextView = (TextView) view.findViewById(R.id.threads);
     plusImageView = (ImageView) view.findViewById(R.id.plus);
     minusImageView = (ImageView) view.findViewById(R.id.minus);
+    threadsLayout = (RelativeLayout) view.findViewById(R.id.threads_layout);
     // Build list of devices
     int defaultModelIndex = 0;
     deviceStrings.add(cpu);
@@ -776,6 +779,11 @@ public class Camera2Fragment extends Fragment
   public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
     if (parent == deviceSpinner) {
       updateActiveModel();
+      if(pos == 1) {
+        threadsLayout.setVisibility(View.GONE);
+      }else{
+        threadsLayout.setVisibility(View.VISIBLE);
+      }
     }
   }
 
